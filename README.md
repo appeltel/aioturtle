@@ -4,7 +4,7 @@ Extension of the python standard library turtle module
 to move turtles asynchronously using the asyncio
 module and the new async/await syntax in python 3.5.
 
-<table><tr>
+<table style="table-layout:fixed;"><tr>
 <td style="width:45%;">
 <img src="docs/images/snapshot.png" alt="Example aioturtle session" />
 </td>
