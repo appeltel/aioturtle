@@ -6,17 +6,17 @@ module and the new async/await syntax in python 3.5.
 
 <table><tr>
 <td>
-![Example aioturtle session](docs/images/snapshot.png)
+<img src="docs/images/snapshot.png" alt="Example aioturtle session" />
 </td>
 <td>
-```
+<pre>
 $ python -m aioturtle
 TurtlePrompt version 0.0.0: Enter "help" for help, "quit" to exit.
-aioturtle> victor circle -100
-<Task pending coro=<circle() running at /.../aioturtle/aioturtle.py:400>>
-aioturtle> guido circle -100
-<Task pending coro=<circle() running at /.../aioturtle/aioturtle.py:400>>
-aioturtle>
-```
+aioturtle&gt; victor circle -100
+&lt;Task pending coro=&lt;circle() running at /.../aioturtle/aioturtle.py:400&gt;&gt;
+aioturtle&gt; guido circle -100
+&lt;Task pending coro=&lt;circle() running at /.../aioturtle/aioturtle.py:400&gt;&gt;
+aioturtle&gt;
+</pre>
 </td>
 </tr></table>
