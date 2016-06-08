@@ -1,3 +1,3 @@
-from . import demo
+from . import demo, __version__
 
-demo()
+demo(version=__version__)

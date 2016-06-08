@@ -11,18 +11,6 @@ import turtle
 import warnings
 import logging
 
-__version__ = '0.0.0'
-
-# I mean, it could change one day, right???
-_KNOWN_TURTLES = ('turtle 1.1b- - for Python 3.1   -  4. 5. 2009',)
-
-if turtle._ver not in _KNOWN_TURTLES:
-    msg = (
-        'aioturtle has not been tested against the version of the turtle '
-        'module packaged with the current python distribution.'
-    )
-    warnings.warn(msg, UserWarning)
-
 _TURTLE_FUNCTION_ALIASES = {
     'goto': ('setpos', 'setposition'),
     'back': ('bk', 'backward'),
@@ -31,6 +19,29 @@ _TURTLE_FUNCTION_ALIASES = {
     'setheading': ('seth',),
     'forward': ('fd',)
 }
+
+_TURTLEPROMPT_HELP = (
+    """
+    Valid TurtlePrompt Commands:
+
+    -   > [TURTLENAME] [COMMAND] [ARG1] [ARG2] ...
+        Sends a command to a turtle by name, either calling function
+        or scheduling a coroutine. Ex: "steve fd 100", "steve circle 100 180",
+        "steve color red yellow".
+
+    -   > list
+        Lists all currently scheduled coroutines.
+
+    -   > new [TURTLENAME]
+        Create a new AsyncTurtle with specified name.
+
+    -   > quit
+        Exit this program.
+
+    -   > help
+        Print this message.        
+    """
+)
 
 
 def add_turtle_fcn_aliases(cls):
@@ -406,11 +417,12 @@ class TurtlePrompt:
     """
     Interactive prompt for issuing commands to AsyncTurtles
     """
-    def __init__(self):
+    def __init__(self, version=None):
         """
         Read from STDIN, either get the Screen singleton or
         create it, and prepare Queue.
         """
+        self.version = version
         self.loop = asyncio.get_event_loop()
         self.queue = asyncio.Queue(loop=self.loop)
         self.loop.add_reader(sys.stdin, self.entry)
@@ -431,9 +443,15 @@ class TurtlePrompt:
         """
         Retrieve command strings from the Queue and parse them
         """
-        print('TurtlePrompt version {0}. Enter "quit" to exit.'
-              .format(__version__)
-        )
+        if self.version:
+            welcome = (
+                'TurtlePrompt version {0}: Enter "help" for help, '
+                '"quit" to exit.'.format(self.version)
+            )
+        else:
+            welcome = 'TurtlePrompt: Enter "help" for help, "quit" to exit.'
+        print(welcome)
+
         while True:
             print('aioturtle> ', end='', flush=True)
             command = await self.queue.get()
@@ -448,6 +466,8 @@ class TurtlePrompt:
                 elif command[0] == 'list':
                     for task in asyncio.Task.all_tasks(loop=self.loop):
                         print(task)
+                elif command[0] == 'help':
+                    print(_TURTLEPROMPT_HELP)
                 else:
                     self.command_turtle(command)
             except Exception as e:
@@ -493,7 +513,7 @@ class TurtlePrompt:
             pass
         return arg
 
-def demo():
+def demo(version=None):
     """
     Demonstration of aioturtle capabilities.
     """
@@ -524,5 +544,5 @@ def demo():
     for pet in pets:
         pet.speed(speed=1)
 
-    prompt = TurtlePrompt()
+    prompt = TurtlePrompt(version=version)
     loop.run_until_complete(prompt.run())
