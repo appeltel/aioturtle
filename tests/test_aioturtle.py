@@ -30,10 +30,11 @@ class AsyncTurtleTests(unittest.TestCase):
         turtle.Turtle._screen.delay(delay=0)
 
 
-    def test_navigation(self):
+    def test_zigzag(self):
         """
         Test that a AsyncTurtle ends up in the correct position
-        after several concurrent commands in sequence.
+        after several concurrent commands in sequence, and draws
+        a zigzag line on the canvas.
         """
         turtle = AsyncTurtle(loop=self.loop)
         tasks = [
@@ -47,3 +48,13 @@ class AsyncTurtleTests(unittest.TestCase):
         self.loop.close()
         self.assertEqual(turtle.pos()[0], 20)
         self.assertEqual(turtle.pos()[1], 10)
+        expected_coords = [
+            0.0, 0.0,
+            10.0, 0.0,
+            10.0, -10.0,
+            20.0, -10.0
+        ]
+        # Assume the last item id on the canvas is the line
+        # drawn by the turtle. Check if this assumption is valid.
+        line_id = max(turtle.screen.cv.find_all())
+        self.assertEqual(turtle.screen.cv.coords(line_id), expected_coords)
