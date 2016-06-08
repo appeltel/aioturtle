@@ -9,7 +9,7 @@ module and the new async/await syntax in python 3.5.
 <img src="docs/images/snapshot.png" alt="Example aioturtle session" />
 </td>
 <td style="width: 45%; font-size: 75%;">
-<pre>
+<pre style="font-size: 75%;">
 $ python -m aioturtle
 TurtlePrompt version 0.0.0: Enter "help" for help, "quit" to exit.
 aioturtle&gt; victor circle -100
