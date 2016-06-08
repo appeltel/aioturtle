@@ -8,7 +8,6 @@ import math
 import time
 import asyncio
 import turtle
-import warnings
 import logging
 
 _TURTLE_FUNCTION_ALIASES = {
@@ -39,7 +38,7 @@ _TURTLEPROMPT_HELP = (
         Exit this program.
 
     -   > help
-        Print this message.        
+        Print this message.
     """
 )
 
@@ -105,7 +104,7 @@ class AioBaseTurtle(turtle.Turtle):
         screen = self.screen
         diff = (endpoint-self._position)
         diffsq = (diff[0]*screen.xscale)**2 + (diff[1]*screen.yscale)**2
-        steps = max(1, int(diffsq**0.5 / self._speed))
+        steps = max(1, int(diffsq**0.5 / speed))
         delta = diff * (1.0/steps)
         return steps, delta
 
@@ -297,7 +296,7 @@ class BlockingTurtle(AioBaseTurtle):
 
         angle = (to_angle - self.heading())*self._angleOrient
         full = self._fullcircle
-        angle = (angle+full/2.)%full - full/2.
+        angle = (angle + full/2.) % full - full/2.
         self._rotate(angle)
 
     def circle(self, radius, extent=None, steps=None):
@@ -395,7 +394,7 @@ class AsyncTurtle(AioBaseTurtle):
         with (await self.lock):
             angle = (to_angle - self.heading())*self._angleOrient
             full = self._fullcircle
-            angle = (angle+full/2.)%full - full/2.
+            angle = (angle + full/2.) % full - full/2.
             await self._rotate(angle)
 
     async def circle(self, radius, extent=None, steps=None):
@@ -477,7 +476,7 @@ class TurtlePrompt:
         """
         Interpret a command string as a function or coroutine to
         run on the given turtle. Print the return value of the
-        function if not none or the Task if a couroutine. 
+        function if not none or the Task if a couroutine.
         """
         turtle_name = command_list[0]
         turtle = self.get_turtle(turtle_name)
@@ -497,9 +496,9 @@ class TurtlePrompt:
             print(result)
 
     def get_turtle(self, name):
-        for turtle in self.screen._turtles:
-            if turtle.name == name:
-                return turtle
+        for turt in self.screen._turtles:
+            if turt.name == name:
+                return turt
         raise Exception('Turtle {0} not found.'.format(name))
 
     def _convert_arg(self, arg):
@@ -513,6 +512,7 @@ class TurtlePrompt:
             pass
         return arg
 
+
 def demo(version=None):
     """
     Demonstration of aioturtle capabilities.
@@ -523,10 +523,10 @@ def demo(version=None):
     pets = [AsyncTurtle(name=turtle_names[idx]) for idx in range(4)]
 
     # move turtles to corners of 200 unit box centered at origin to start
-    for idx, pet  in enumerate(pets):
+    for idx, pet in enumerate(pets):
         pet.up()
-        x_sign = -1 if (idx//2)%2 else 1
-        y_sign = -1 if idx%2 else 1  
+        x_sign = -1 if (idx//2) % 2 else 1
+        y_sign = -1 if idx % 2 else 1
         loop.run_until_complete(pet.goto(100*x_sign - 100, 100*y_sign))
 
     pets[0].color('#800000', '#ff0000')
@@ -539,7 +539,7 @@ def demo(version=None):
         pet.write(pet.name, font=("Arial", 16, "italic"), align="left")
 
     tasks = [pet.forward(70) for pet in pets]
-    loop.run_until_complete(asyncio.wait(tasks)) 
+    loop.run_until_complete(asyncio.wait(tasks))
 
     for pet in pets:
         pet.speed(speed=1)
