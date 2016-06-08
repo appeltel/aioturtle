@@ -308,8 +308,11 @@ class AsyncTurtle(AioBaseTurtle):
     _AsyncTurtle_
 
     """
-    def __init__(self, **kwargs):
-        self.lock = asyncio.Lock()
+    def __init__(self, loop=None, **kwargs):
+        if loop is None:
+            loop = asyncio.get_event_loop()
+        self.loop = loop
+        self.lock = asyncio.Lock(loop=self.loop)
         super().__init__(**kwargs)
 
     async def _goto(self, end):
@@ -321,7 +324,7 @@ class AsyncTurtle(AioBaseTurtle):
             start = self._position
             steps, delta = self._calc_move(end)
             for n in range(1, steps):
-                await asyncio.sleep(self.step_time)
+                await asyncio.sleep(self.step_time, loop=self.loop)
                 self._move_step(start, n, delta)
 
         self._finalize_move(end)
@@ -335,7 +338,7 @@ class AsyncTurtle(AioBaseTurtle):
         if self.animated:
             for _ in range(steps):
                 self._orient = self._orient.rotate(delta)
-                await asyncio.sleep(self.step_time)
+                await asyncio.sleep(self.step_time, loop=self.loop)
                 self._update_graphics()
         self._orient = new_orient
         self._update_graphics()
