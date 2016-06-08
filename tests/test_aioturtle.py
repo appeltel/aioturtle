@@ -9,7 +9,7 @@ import asyncio
 import turtle
 import unittest
 
-from aioturtle.aioturtle import (AsyncTurtle,)
+from aioturtle import (AsyncTurtle,)
 
 class AsyncTurtleTests(unittest.TestCase):
     """
