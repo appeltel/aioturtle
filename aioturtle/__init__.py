@@ -21,4 +21,4 @@ __author__ = 'Eric Appelt'
 __license__ = 'None'
 __copyright__ = 'Copyright 2016 Eric Appelt'
 
-from .aioturtle import BlockingTurtle, AsyncTurtle, TurtlePrompt
+from .aioturtle import BlockingTurtle, AsyncTurtle, TurtlePrompt, demo
