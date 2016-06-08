@@ -5,10 +5,10 @@ to move turtles asynchronously using the asyncio
 module and the new async/await syntax in python 3.5.
 
 <table><tr>
-<td>
+<td style="width:45%;">
 <img src="docs/images/snapshot.png" alt="Example aioturtle session" />
 </td>
-<td>
+<td style="width:45%;">
 <pre>
 $ python -m aioturtle
 TurtlePrompt version 0.0.0: Enter "help" for help, "quit" to exit.
