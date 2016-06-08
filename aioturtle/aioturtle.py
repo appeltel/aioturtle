@@ -507,26 +507,22 @@ def demo():
         pet.up()
         x_sign = -1 if (idx//2)%2 else 1
         y_sign = -1 if idx%2 else 1  
-        loop.run_until_complete(pet.goto(100 * x_sign, 100 * y_sign))
+        loop.run_until_complete(pet.goto(100*x_sign - 100, 100*y_sign))
+
+    pets[0].color('#800000', '#ff0000')
+    pets[1].color('#008000', '#00ff00')
+    pets[2].color('#000080', '#0000ff')
+    pets[3].color('#000000', '#606060')
 
     for pet in pets:
         pet.down()
         pet.write(pet.name, font=("Arial", 16, "italic"), align="left")
 
-    async def talk_circle(pet, radius):
-        await pet.circle(radius)
-        print('Turtle {0} made a circle of radius {1}'
-              .format(pet.name, radius)
-        )
+    tasks = [pet.forward(70) for pet in pets]
+    loop.run_until_complete(asyncio.wait(tasks)) 
 
     for pet in pets:
         pet.speed(speed=1)
 
     prompt = TurtlePrompt()
-
     loop.run_until_complete(prompt.run())
-
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
-    demo()
