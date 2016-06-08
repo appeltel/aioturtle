@@ -3,6 +3,7 @@ _test_aiobaseturtle_
 
 Unit tests for the AioBaseTurtle class methods.
 """
+import math
 import unittest
 import unittest.mock as mock
 from turtle import Vec2D
@@ -53,3 +54,25 @@ class AioBaseTurtleTests(unittest.TestCase):
         self.assertEqual(steps, 20)
         self.assertAlmostEqual(delta[0], 0.0)
         self.assertAlmostEqual(delta[1], 5.0)
+
+    def test_calc_rotation(self):
+        """
+        Test the AioBaseTurtle._calc_rotation function
+        """
+        t = AioBaseTurtle()
+        t.speed(speed=2)
+        orient, steps, delta = t._calc_rotation(120)
+        self.assertEqual(steps, 21) 
+        self.assertAlmostEqual(delta, 120.0 / 21.0)
+        self.assertAlmostEqual(orient[0], math.cos(math.radians(120)))
+        self.assertAlmostEqual(orient[1], math.sin(math.radians(120)))
+
+    def test_calc_circle(self):
+        """
+        Test the AioBaseTurtle._calc_circle function
+        """
+        t = AioBaseTurtle()
+        steps, step_len, rot_step = t._calc_circle(100, extent=180)
+        self.assertEqual(steps, 14)
+        self.assertAlmostEqual(rot_step, 180.0 / 14.0)
+        self.assertAlmostEqual(step_len, 22.3928952207)
