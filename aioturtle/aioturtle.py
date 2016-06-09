@@ -9,6 +9,7 @@ import time
 import asyncio
 import turtle
 import logging
+import concurrent
 
 _TURTLE_FUNCTION_ALIASES = {
     'goto': ('setpos', 'setposition'),
@@ -412,6 +413,21 @@ class AsyncTurtle(AioBaseTurtle):
 add_turtle_fcn_aliases(AsyncTurtle)
 
 
+async def keep_refreshed(screen, delay=0.5):
+    """
+    Coroutine to keep tkinter canvas refreshed periodically,
+    defaults to 0.5 seconds between refreshes. This prevents
+    annoyances like the spinning beachball cursor in OSX when
+    no turtle is moving and updating the screen.
+    """
+    try:
+        while True:
+            await asyncio.sleep(delay)
+            screen._update()
+    except concurrent.futures.CancelledError:
+        return
+
+
 class TurtlePrompt:
     """
     Interactive prompt for issuing commands to AsyncTurtles
@@ -419,15 +435,21 @@ class TurtlePrompt:
     def __init__(self, version=None):
         """
         Read from STDIN, either get the Screen singleton or
-        create it, and prepare Queue.
+        create it, and prepare Queue. Create a keep_refreshed
+        task to keep the screen updated.
         """
         self.version = version
         self.loop = asyncio.get_event_loop()
         self.queue = asyncio.Queue(loop=self.loop)
         self.loop.add_reader(sys.stdin, self.entry)
+
         if turtle.Turtle._screen is None:
             turtle.Turtle._screen = turtle.Screen()
         self.screen = turtle.Turtle._screen
+        self.refresher = asyncio.ensure_future(
+            keep_refreshed(self.screen),
+            loop=self.loop
+        )
 
     def entry(self):
         """
@@ -459,6 +481,7 @@ class TurtlePrompt:
                 if not command:
                     continue
                 elif command[0] == 'quit':
+                    self.refresher.cancel()
                     return
                 elif command[0] == 'new':
                     AsyncTurtle(name=command[1])
