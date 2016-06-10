@@ -1,5 +1,8 @@
 # aioturtle
 
+
+[![Travs-CI status](https://travis-ci.org/appeltel/aioturtle.png)](https://travis-ci.org/appeltel/aioturtle)
+
 Extension of the python standard library turtle module
 to move turtles asynchronously using the asyncio
 module and the new async/await syntax in python 3.5.
