@@ -13,6 +13,10 @@ from aioturtle.aioturtle import AioBaseTurtle
 class AioBaseTurtleTests(unittest.TestCase):
     """
     Tests for the AioBaseTurtle class
+
+    Trivial property methods are not tested, as well as
+    the _finalize_move and _update_graphics methods which
+    are comprised of calls to graphics functions.
     """
     def setUp(self):
         """
@@ -62,7 +66,7 @@ class AioBaseTurtleTests(unittest.TestCase):
         t = AioBaseTurtle()
         t.speed(speed=2)
         orient, steps, delta = t._calc_rotation(120)
-        self.assertEqual(steps, 21) 
+        self.assertEqual(steps, 21)
         self.assertAlmostEqual(delta, 120.0 / 21.0)
         self.assertAlmostEqual(orient[0], math.cos(math.radians(120)))
         self.assertAlmostEqual(orient[1], math.sin(math.radians(120)))
@@ -76,3 +80,20 @@ class AioBaseTurtleTests(unittest.TestCase):
         self.assertEqual(steps, 14)
         self.assertAlmostEqual(rot_step, 180.0 / 14.0)
         self.assertAlmostEqual(step_len, 22.3928952207)
+
+    def test_move_step(self):
+        """
+        Test the AioBaseTurtle._move_step function
+        """
+        t = AioBaseTurtle()
+        t._move_step(Vec2D(-100, 0), 20, Vec2D(10,5))
+        self.assertAlmostEqual(t._position[0], 100)
+        self.assertAlmostEqual(t._position[1], 100)
+        t.screen._drawline.assert_called_once_with(
+            t.currentLineItem,
+            ((-100.0, 0.0), (100.0, 100.0)), # called with mutable _position
+            "black",
+            1,
+            False
+        )
+        self.mock_update.assert_called_once_with()
